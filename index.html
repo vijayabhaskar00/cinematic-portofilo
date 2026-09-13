@@ -22,46 +22,61 @@
      wordmark is drawn on the canvas so video can be clipped inside its letters -->
 <h1 class="sr-only">VIJAY — Artist, Creative, Storyteller. Welcome to my world.</h1>
 
+<!-- Header and mobile menu live outside .stage-wrap on purpose: that wrapper
+     is set to visibility:hidden once the hero scrolls off screen (to stop
+     decoding its video), and it also sits in a lower stacking context than
+     <main>, which was swallowing every click meant for the nav. Both need to
+     stay visible and clickable for the whole page, not just over the hero. -->
+<header class="hdr" id="hdr">
+  <svg class="hdr__rule" id="hdrRule" aria-hidden="true" preserveAspectRatio="none">
+    <polyline id="hdrRulePath" fill="none" stroke="currentColor" stroke-width="1.25"
+              vector-effect="non-scaling-stroke"/>
+  </svg>
+
+  <a class="hdr__mark" href="#" aria-label="Vijay, home">
+    <span class="mark-word">VIJAY</span>
+  </a>
+
+  <span class="hdr__div" aria-hidden="true"></span>
+
+  <p class="hdr__roles">
+    <span>Artist</span><span>Creative</span><span>Storyteller</span>
+  </p>
+
+  <nav class="hdr__nav" aria-label="Primary">
+    <ul>
+      <li><a href="#" class="is-active" data-nav>Home</a></li>
+      <li><a href="#" data-nav>Work</a></li>
+      <li><a href="#" data-nav>About</a></li>
+      <li><a href="#" data-nav>Journal</a></li>
+      <li><a href="#" data-nav>Contact</a></li>
+    </ul>
+  </nav>
+
+  <div class="hdr__meta">
+    <span class="hdr__metaLabel">Portfolio — MMXXVI</span>
+    <span class="hdr__pips" aria-hidden="true"><i></i><i></i><i></i></span>
+  </div>
+
+  <button class="hdr__burger" id="burger" aria-expanded="false" aria-controls="hdrNavMobile">
+    <span aria-hidden="true"></span><span aria-hidden="true"></span>
+    <span class="sr-only">Menu</span>
+  </button>
+</header>
+
+<nav class="menu" id="menu" aria-label="Primary, expanded" hidden>
+  <ul>
+    <li><a href="#" class="is-active" data-nav>Home</a></li>
+    <li><a href="#" data-nav>Work</a></li>
+    <li><a href="#" data-nav>About</a></li>
+    <li><a href="#" data-nav>Journal</a></li>
+    <li><a href="#" data-nav>Contact</a></li>
+  </ul>
+  <p class="menu__tag">••• Welcome to my world •••</p>
+</nav>
+
 <div class="stage-wrap">
   <canvas id="stage" aria-hidden="true"></canvas>
-
-  <!-- ------------------------------------------------------------------ -->
-  <header class="hdr" id="hdr">
-    <svg class="hdr__rule" id="hdrRule" aria-hidden="true" preserveAspectRatio="none">
-      <polyline id="hdrRulePath" fill="none" stroke="currentColor" stroke-width="1.25"
-                vector-effect="non-scaling-stroke"/>
-    </svg>
-
-    <a class="hdr__mark" href="#" aria-label="Vijay, home">
-      <span class="mark-word">VIJAY</span>
-    </a>
-
-    <span class="hdr__div" aria-hidden="true"></span>
-
-    <p class="hdr__roles">
-      <span>Artist</span><span>Creative</span><span>Storyteller</span>
-    </p>
-
-    <nav class="hdr__nav" aria-label="Primary">
-      <ul>
-        <li><a href="#" class="is-active" data-nav>Home</a></li>
-        <li><a href="#" data-nav>Work</a></li>
-        <li><a href="#" data-nav>About</a></li>
-        <li><a href="#" data-nav>Journal</a></li>
-        <li><a href="#" data-nav>Contact</a></li>
-      </ul>
-    </nav>
-
-    <div class="hdr__meta">
-      <span class="hdr__metaLabel">Portfolio — MMXXVI</span>
-      <span class="hdr__pips" aria-hidden="true"><i></i><i></i><i></i></span>
-    </div>
-
-    <button class="hdr__burger" id="burger" aria-expanded="false" aria-controls="hdrNavMobile">
-      <span aria-hidden="true"></span><span aria-hidden="true"></span>
-      <span class="sr-only">Menu</span>
-    </button>
-  </header>
 
   <!-- ------------------------------------------------------------------ -->
   <div class="furniture" aria-hidden="true">
@@ -80,18 +95,6 @@
          navigation and fought with it -->
     <div class="grid-dots grid-dots--br" id="dotsBR"></div>
   </div>
-
-  <!-- ------------------------------------------------------------------ -->
-  <nav class="menu" id="menu" aria-label="Primary, expanded" hidden>
-    <ul>
-      <li><a href="#" class="is-active" data-nav>Home</a></li>
-      <li><a href="#" data-nav>Work</a></li>
-      <li><a href="#" data-nav>About</a></li>
-      <li><a href="#" data-nav>Journal</a></li>
-      <li><a href="#" data-nav>Contact</a></li>
-    </ul>
-    <p class="menu__tag">••• Welcome to my world •••</p>
-  </nav>
 
   <!-- ------------------------------------------------------------------ -->
   <div class="boot" id="boot">

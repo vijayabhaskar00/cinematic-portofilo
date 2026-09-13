@@ -99,7 +99,7 @@ html.is-booting .hdr { opacity: 0; }
    ========================================================================== */
 
 .hdr {
-  position: absolute; top: 0; left: 0; right: 0;
+  position: fixed; top: 0; left: 0; right: 0;
   height: var(--hdr-h);
   display: flex;
   align-items: center;
@@ -390,7 +390,7 @@ html.is-booting .hdr { opacity: 0; }
    ========================================================================== */
 
 .menu {
-  position: absolute; inset: 0;
+  position: fixed; inset: 0;
   z-index: 18;
   display: grid;
   place-content: center;
