@@ -275,8 +275,17 @@ window.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && root.classList.contains('is-menu')) setMenu(false);
 });
 
+// The wordmark logo is "go home", not "scroll home": clicking it restarts
+// the whole experience (boot sequence included), same as any site logo.
+// It's excluded from the data-nav scroll-spy list on purpose - reload takes
+// over immediately, so it never needs an active/inactive state.
+document.getElementById('hdrLogo')?.addEventListener('click', (e) => {
+  e.preventDefault();
+  location.reload();
+});
+
 // primary nav: scroll to the matching section instead of a dead "#" link.
-// href="#" (Home / the wordmark) has no target - guard against it, since
+// href="#" (Home) has no target - guard against it, since
 // document.querySelector('#') throws rather than returning null.
 const navLinks = [...document.querySelectorAll('[data-nav]')];
 const navTarget = (a) => {
