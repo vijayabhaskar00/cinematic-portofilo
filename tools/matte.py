@@ -265,15 +265,36 @@ def frame_alpha(bgr, cfg):
 
     # Floor guard. The bottom band of a cyclorama shot holds the glossy-floor
     # reflections and specular smears around the shoes; keyed softly they read
-    # as white ghosts under his feet on the site. In that band, faint alpha is
-    # crushed while anything solid (the shoes themselves) is left alone.
+    # as white ghosts under his feet on the site. In that band, anything NOT
+    # part of the actual detected silhouette is crushed; the shoes themselves
+    # (the `solid` mask) are left alone.
+    #
+    # NB: this used to be a depth-in-band gate (nearer the top of the band,
+    # less suppression) keyed on smoothstep(0.30, 0.72, band) - i.e. it judged
+    # a pixel by the alpha *it was about to get*. Both were wrong: a bright,
+    # high-contrast reflection reads as high-confidence alpha on its own
+    # (self-validating past the gate), and a reflection can also sit just
+    # above the shoe - closer to the top of the band, where depth-based
+    # suppression is weakest - rather than only underneath it. What actually
+    # tells a reflection apart from the shoe is POSITION relative to the real
+    # silhouette, not how bright it reads or how deep in the frame it sits: a
+    # distance transform from `solid` fades alpha out over a short pixel
+    # radius, protecting the shoe's own antialiased edge while crushing any
+    # blob that is not actually touching it, wherever in the band it falls.
     fg = cfg.get("floor_guard", 0.0)
     if fg > 0:
         y0 = int(h * (1.0 - fg))
         band = a[y0:, :]
-        gate = smoothstep(0.30, 0.72, band)
-        depth = np.linspace(0.0, 1.0, band.shape[0], dtype=np.float32)[:, None]
-        a[y0:, :] = band * (1.0 - depth * (1.0 - gate))
+        solid_band = cv2.dilate(
+            solid.astype(np.uint8),
+            cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5)),
+        )[y0:, :]
+        dist_px = cv2.distanceTransform(1 - solid_band, cv2.DIST_L2, 3)
+        radius = 2.0  # antialiasing width only - a reflection touching the sole
+                       # is exactly as close to `solid` as the sole's own soft
+                       # edge, so the falloff must not reach past the edge itself
+        keep = 1.0 - smoothstep(0.0, radius, dist_px)
+        a[y0:, :] = band * keep
 
     # Silhouette solidify (black-void footage). Against true black the suit's
     # deepest folds carry no signal at all, but the OUTLINE always does: close
@@ -358,7 +379,7 @@ PRESETS = {
                bg_thr=10, fg_thr=52, edge_barrier=0, seed_edges="ltrb",
                band=26, seal=9, hole_min=0, gf_radius=4, gf_eps=1e-4, choke=0.06,
                out_lo=0.14, out_hi=0.96, despill=1.0, unmul_floor=0.22,
-               est_win=17, ema=0.55, floor_guard=0.14),
+               est_win=17, ema=0.55, floor_guard=0.24),
     # black top + CREAM trousers + WHITE sneakers on pure white
     "v2": dict(ring=10, ring_min_L=200, w_lum=1.0, w_chroma=2.6, lo=15, hi=32,
                bg_thr=13, fg_thr=34, edge_barrier=26, seed_edges="ltr",
