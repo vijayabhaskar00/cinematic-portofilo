@@ -275,6 +275,40 @@ window.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && root.classList.contains('is-menu')) setMenu(false);
 });
 
+// primary nav: scroll to the matching section instead of a dead "#" link.
+// href="#" (Home / the wordmark) has no target - guard against it, since
+// document.querySelector('#') throws rather than returning null.
+const navLinks = [...document.querySelectorAll('[data-nav]')];
+const navTarget = (a) => {
+  const href = a.getAttribute('href') || '';
+  return href.length > 1 ? document.querySelector(href) : null;
+};
+const navSections = navLinks.map(navTarget).filter(Boolean);
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function setActiveNav(target) {
+  for (const a of navLinks) a.classList.toggle('is-active', navTarget(a) === target);
+}
+
+navLinks.forEach((a) => {
+  a.addEventListener('click', (e) => {
+    e.preventDefault();
+    const target = navTarget(a);
+    if (target) target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+    else window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+  });
+});
+
+if (navSections.length && 'IntersectionObserver' in window) {
+  const spy = new IntersectionObserver((entries) => {
+    const visible = entries.filter((e) => e.isIntersecting)
+      .sort((x, y) => y.intersectionRatio - x.intersectionRatio)[0];
+    if (visible) setActiveNav(visible.target);
+    else if (window.scrollY < window.innerHeight * 0.5) setActiveNav(null);
+  }, { threshold: [0.25, 0.5, 0.75] });
+  navSections.forEach((el) => spy.observe(el));
+}
+
 // The hero is position:fixed behind the flow, so once scene two covers it there
 // is nothing to see - stop decoding its video rather than burning battery on
 // frames nobody is looking at.

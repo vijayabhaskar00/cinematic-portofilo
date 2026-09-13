@@ -72,6 +72,14 @@ html, body {
   text-rendering: optimizeLegibility;
 }
 
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+/* nav targets: land just below the fixed header, not underneath it */
+#universe, #chrono, #gallery, #fin { scroll-margin-top: var(--hdr-h); }
+
 /* nothing may paint before the sequence is ready to start on true black */
 html.is-booting .furniture,
 html.is-booting .hdr { opacity: 0; }
