@@ -273,8 +273,13 @@
   color: color-mix(in srgb, #a89a90 calc(100% - 75% * var(--near, 0)), #ffb488);
   /* a real hyphen at a syllable break (EXPLOR-ATION) reads as considered;
      break-word's raw mid-word cut (EXPLORATI-ON, or an orphan single
-     letter like CHAPTE-R) reads as broken. Hyphenate first, and keep
-     break-word only as the fallback for anything the dictionary can't hyphenate */
+     letter like CHAPTE-R) reads as broken. `hyphens: auto` depends on the
+     browser's own dictionary and proved unreliable in practice (it fell
+     back to a raw, hyphen-less break), so the real fix is the explicit
+     soft-hyphen (­) placed in each long key in layout3.js — this is
+     kept as a harmless second layer for browsers where auto does work */
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
   hyphens: auto;
   overflow-wrap: break-word;
 }
@@ -291,6 +296,8 @@
   text-transform: uppercase;
   color: #8d8078;
   transition: color .5s ease;
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
   hyphens: auto;
   overflow-wrap: break-word;
 }

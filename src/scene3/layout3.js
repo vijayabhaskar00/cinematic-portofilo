@@ -12,22 +12,28 @@
 export const YEARS = [
   {
     year: 2015,
-    key: 'Beginning',
+    // ­ is a soft hyphen: invisible unless the browser actually needs
+    // to break there, in which case it shows a real hyphen glyph. CSS
+    // `hyphens: auto` alone was not reliable across browsers (it fell back
+    // to a raw, hyphen-less overflow-wrap cut mid-word — "BEGINNIN/G"), so
+    // every long single-word key gets an explicit break point here instead
+    // of depending on the browser's own hyphenation dictionary.
+    key: 'Begin­ning',
     lines: ['New city', 'New chapter', 'Bigger dreams'],
   },
   {
     year: 2016,
-    key: 'Foundations',
+    key: 'Founda­tions',
     lines: ['Learning', 'Building', 'The craft'],
   },
   {
     year: 2017,
-    key: 'Momentum',
+    key: 'Mo­men­tum',
     lines: ['More skills', 'Bigger goals', 'Same curiosity'],
   },
   {
     year: 2018,
-    key: 'Direction',
+    key: 'Direc­tion',
     lines: ['New tools', 'New people', 'Measured value'],
   },
   {
@@ -37,22 +43,22 @@ export const YEARS = [
   },
   {
     year: 2020,
-    key: 'Resilience',
+    key: 'Resil­ience',
     lines: ['Remote work', 'New routines', 'Stronger focus'],
   },
   {
     year: 2021,
-    key: 'Reigniting',
+    key: 'Reig­niting',
     lines: ['New chapter', 'Bigger dreams', 'Fresh momentum'],
   },
   {
     year: 2022,
-    key: 'Exploration',
+    key: 'Explo­ration',
     lines: ['Learned design', 'Found direction'],
   },
   {
     year: 2023,
-    key: 'Practice',
+    key: 'Prac­tice',
     lines: ['Built skills', 'Made projects', 'Kept going'],
   },
   {
@@ -62,7 +68,7 @@ export const YEARS = [
   },
   {
     year: 2025,
-    key: 'Opportunities',
+    key: 'Oppor­tu­nities',
     lines: ['Collaborated', 'Solved problems', 'Stepped up'],
   },
   {
