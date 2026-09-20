@@ -202,10 +202,10 @@
      30% down the finished card, so that is what is anchored */
   transform:
     translate(-50%, -30%)
-    translateZ(calc(var(--near, 0) * 46px))
+    translateZ(calc(var(--near, 0) * 70px))
     translateY(calc((1 - var(--in, 0)) * 26px))
     rotate(var(--tilt, 0deg))
-    scale(calc(.94 + .06 * var(--near, 0)));
+    scale(calc(.90 + .22 * var(--near, 0)));
   opacity: var(--in, 0);
   will-change: transform, opacity;
   transition: filter .45s ease;
@@ -214,7 +214,7 @@
 .yr__frame {
   position: relative;
   display: block;
-  padding: 5px;
+  padding: 6px;
   border-radius: 10px;
   background:
     linear-gradient(160deg, rgba(38, 26, 20, .92), rgba(14, 10, 9, .96));
@@ -253,7 +253,7 @@
   display: block;
   font-family: var(--ui);
   font-weight: 300;
-  font-size: clamp(13px, 1.15vw, 19px);
+  font-size: clamp(14px, 1.25vw, 21px);
   letter-spacing: .04em;
   line-height: 1;
   color: color-mix(in srgb, #d9cfc6 calc(100% - 60% * var(--near, 0)), #fff3e8);
@@ -263,7 +263,7 @@
   margin-top: .5em;
   font-family: var(--ui);
   font-weight: 600;
-  font-size: clamp(7px, .58vw, 9px);
+  font-size: clamp(7.5px, .66vw, 9.8px);
   /* wide tracking read fine on the original six cards, which were roughly
      2x this width; at 12-up it starves a single long word (EXPLORATION,
      OPPORTUNITIES) of the room it needs, so it is tightened here rather
@@ -286,7 +286,7 @@
 .yr__lines i {
   font-style: normal;
   font-family: var(--ui);
-  font-size: clamp(6.5px, .52vw, 8.2px);
+  font-size: clamp(7px, .60vw, 9px);
   letter-spacing: .04em;
   text-transform: uppercase;
   color: #8d8078;

@@ -103,11 +103,12 @@ export async function initChrono() {
       // each other's captions.
       const prevGap = i > 0 ? Math.abs(c.x - L.cards[i - 1].x) : Infinity;
       const nextGap = i < cards.length - 1 ? Math.abs(L.cards[i + 1].x - c.x) : Infinity;
-      // .95 rather than a tighter margin: caption text can still wrap
-      // (overflow-wrap: break-word backstops it) instead of bleeding into a
-      // neighbour, so the safety margin only needs to keep frames visually
-      // apart, not guarantee zero approach
-      const w = portrait ? c.w : Math.min(c.w * 1.62, Math.min(prevGap, nextGap) * 0.95);
+      // 1.10 rather than a tighter margin: hyphenation (chrono.css)
+      // backstops any caption that still doesn't fit, so the margin only
+      // needs to keep RESTING (near:0, unscaled) frames from touching —
+      // every card was landing at its gap ceiling and reading as cramped,
+      // so the ceiling itself needed to move, not just what's under it
+      const w = portrait ? c.w : Math.min(c.w * 1.62, Math.min(prevGap, nextGap) * 1.10);
       el.style.width = `${w}px`;
       el.style.left = `${c.x}px`;
       el.style.top = `${c.y}px`;
