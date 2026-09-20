@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://vijayabhaskar00.github.io/cinematic-portofilo/sitemap.xml
