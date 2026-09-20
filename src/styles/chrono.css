@@ -1,7 +1,7 @@
 /* ==========================================================================
    Scene three — the time machine.
    The room, floor mechanism, clock and timeline rail are drawn on a WebGL
-   canvas. The six year cards are DOM: each carries real text that has to stay
+   canvas. The year cards are DOM: each carries real text that has to stay
    crisp and reachable, and they are positioned by JS from the same fitted
    geometry the canvas draws with, so the layers cannot drift apart.
    ========================================================================== */
@@ -214,7 +214,7 @@
 .yr__frame {
   position: relative;
   display: block;
-  padding: 7px;
+  padding: 5px;
   border-radius: 10px;
   background:
     linear-gradient(160deg, rgba(38, 26, 20, .92), rgba(14, 10, 9, .96));
@@ -263,10 +263,20 @@
   margin-top: .5em;
   font-family: var(--ui);
   font-weight: 600;
-  font-size: clamp(7.5px, .62vw, 9.5px);
-  letter-spacing: .22em;
+  font-size: clamp(7px, .58vw, 9px);
+  /* wide tracking read fine on the original six cards, which were roughly
+     2x this width; at 12-up it starves a single long word (EXPLORATION,
+     OPPORTUNITIES) of the room it needs, so it is tightened here rather
+     than left to fight the hyphenation below for the same space */
+  letter-spacing: .05em;
   text-transform: uppercase;
   color: color-mix(in srgb, #a89a90 calc(100% - 75% * var(--near, 0)), #ffb488);
+  /* a real hyphen at a syllable break (EXPLOR-ATION) reads as considered;
+     break-word's raw mid-word cut (EXPLORATI-ON, or an orphan single
+     letter like CHAPTE-R) reads as broken. Hyphenate first, and keep
+     break-word only as the fallback for anything the dictionary can't hyphenate */
+  hyphens: auto;
+  overflow-wrap: break-word;
 }
 .yr__lines {
   display: grid;
@@ -276,11 +286,13 @@
 .yr__lines i {
   font-style: normal;
   font-family: var(--ui);
-  font-size: clamp(7px, .56vw, 8.6px);
-  letter-spacing: .16em;
+  font-size: clamp(6.5px, .52vw, 8.2px);
+  letter-spacing: .04em;
   text-transform: uppercase;
   color: #8d8078;
   transition: color .5s ease;
+  hyphens: auto;
+  overflow-wrap: break-word;
 }
 .yr.is-active .yr__lines i { color: #c9bab0; }
 
@@ -303,7 +315,7 @@
    Portrait — the timeline becomes a vertical descent rather than a squeezed arc
    -------------------------------------------------------------------------- */
 
-/* On a phone the deck holds ONE card at a time: six stacked cards in a tall
+/* On a phone the deck holds ONE card at a time: a dozen stacked cards in a tall
    frame would be a pile, so the vertical year rail becomes the control and the
    active card holds the stage beside it. */
 .chrono.is-portrait .chrono__deck { perspective: none; }

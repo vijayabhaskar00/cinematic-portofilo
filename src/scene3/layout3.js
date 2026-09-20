@@ -11,9 +11,39 @@
 
 export const YEARS = [
   {
-    year: 2021,
+    year: 2015,
     key: 'Beginning',
     lines: ['New city', 'New chapter', 'Bigger dreams'],
+  },
+  {
+    year: 2016,
+    key: 'Foundations',
+    lines: ['Learning', 'Building', 'The craft'],
+  },
+  {
+    year: 2017,
+    key: 'Momentum',
+    lines: ['More skills', 'Bigger goals', 'Same curiosity'],
+  },
+  {
+    year: 2018,
+    key: 'Direction',
+    lines: ['New tools', 'New people', 'Measured value'],
+  },
+  {
+    year: 2019,
+    key: 'Impact',
+    lines: ['Real problems', 'Real solutions', 'Measurable value'],
+  },
+  {
+    year: 2020,
+    key: 'Resilience',
+    lines: ['Remote work', 'New routines', 'Stronger focus'],
+  },
+  {
+    year: 2021,
+    key: 'Reigniting',
+    lines: ['New chapter', 'Bigger dreams', 'Fresh momentum'],
   },
   {
     year: 2022,
@@ -42,24 +72,48 @@ export const YEARS = [
   },
 ];
 
-// measured in the 1280x720 reference, stored as fractions of the frame
+// measured in the 1280x720 reference, stored as fractions of the frame.
+// Re-measured whole when the timeline grew from 6 to 12 nodes (2015-2026):
+// cramming twice the cards into the same frame reflows the whole curve, so
+// the old 2021-2026 fractions (measured for a 6-card row) no longer apply.
+// Each card centre below is this poster's own detected box (or, where the
+// generator fused a card's photo into its frame, a linear fill between its
+// neighbours); each node is that card centre offset upward by this poster's
+// own median node-to-card gap (~0.132 frame heights) — the same
+// relationship the original six points carried. The 2022-2026 stretch is
+// evenly resampled between those two real anchors rather than kept at its
+// raw detected spacing: the raw boxes clustered three years into barely
+// more space than one, leaving too little width for their captions even
+// after the DOM upscale was capped to the gap (see boot3.js place()).
 const REF = {
   nodes: [
-    [0.2226, 0.1456],
-    [0.3201, 0.2319],
-    [0.4245, 0.2940],
-    [0.5373, 0.3382],
-    [0.6648, 0.3683],
-    [0.8064, 0.3776],
+    [0.1176, 0.2304],
+    [0.1909, 0.2620],
+    [0.2585, 0.2805],
+    [0.3261, 0.2989],
+    [0.4004, 0.3087],
+    [0.4695, 0.3053],
+    [0.5386, 0.3018],
+    [0.6139, 0.3117],
+    [0.6778, 0.3065],
+    [0.7417, 0.3014],
+    [0.8056, 0.2962],
+    [0.8695, 0.2910],
   ],
   // centre of each card's artwork, and the card's width as a fraction of frame
   cards: [
-    [0.2047, 0.2875, 0.081],
-    [0.3109, 0.3569, 0.088],
-    [0.4250, 0.4097, 0.095],
-    [0.5375, 0.4583, 0.102],
-    [0.6906, 0.5083, 0.110],
-    [0.8180, 0.5292, 0.124],
+    [0.1194, 0.3628, 0.0350],
+    [0.1927, 0.3944, 0.0446],
+    [0.2603, 0.4129, 0.0422],
+    [0.3279, 0.4313, 0.0398],
+    [0.4022, 0.4411, 0.0469],
+    [0.4713, 0.4377, 0.0441],
+    [0.5404, 0.4342, 0.0413],
+    [0.6157, 0.4441, 0.0484],
+    [0.6796, 0.4389, 0.0570],
+    [0.7435, 0.4338, 0.0655],
+    [0.8074, 0.4286, 0.0741],
+    [0.8713, 0.4234, 0.0826],
   ],
   pivot: [0.6991, 0.0483],   // the clock's hand pivot
   // The dial is NOT concentric with the hand in the reference — it is a much
@@ -70,10 +124,15 @@ const REF = {
   // Slightly LEFT of true centre, and a step NEARER than the deck: he renders
   // on the front canvas, over the cards, standing in front of his own journey.
   // Offset left and set LOW — nearer the viewer than the ring centre — so his
-  // head rises only into the bottom rows of the 2023 card and his shoulders
-  // clear its text block entirely: every card stays readable around him. The
-  // ring system stays centred on the scene regardless.
-  figure: [0.3900, 0.9740, 0.412],  // centre x, feet y, height as frac of frame
+  // head rises only into a card's PHOTO, never its caption text: every card
+  // stays readable around him. The ring system stays centred on the scene
+  // regardless.
+  // Height was 0.412 for the 6-card layout; with 12 cards now packed into
+  // the same frame their captions sit measurably lower (proportionally
+  // taller text blocks per card), so his old reach rose into 2019's caption
+  // — confirmed against a live screenshot, his head-top landed mid-caption.
+  // Shortened so his head-top clears every card's text zone with margin.
+  figure: [0.3900, 0.9740, 0.30],  // centre x, feet y, height as frac of frame
   floor: [0.4900, 0.9550],   // centre of the ring system, at his feet
 };
 
@@ -117,8 +176,10 @@ export function fitScene(w, h) {
     // years become a vertical rail down the left, and one card at a time holds
     // the stage beside it.
     const railX = w * 0.155;
-    const top = h * 0.255;
-    const step = h * 0.088;
+    const top = h * 0.20;
+    // the rail spans a fixed band regardless of how many years it carries,
+    // so it always fits the viewport instead of running off the bottom
+    const step = (h * 0.66) / Math.max(1, REF.nodes.length - 1);
     nodes = REF.nodes.map((_, i) => [railX + i * w * 0.006, top + i * step]);
     const cw = Math.min(w * 0.62, 330);
     cards = REF.nodes.map((_, i) => ({

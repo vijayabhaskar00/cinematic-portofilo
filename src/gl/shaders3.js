@@ -245,11 +245,12 @@ uniform float uTime;
 uniform float uAspect;
 uniform vec3  uArc;        // centre x, centre y, radius (normalised, height units)
 uniform vec2  uSpan;       // start and end angle of the visible arc
-uniform float uReveal;     // 0..1 the line draws itself from 2021 forward
+uniform float uReveal;     // 0..1 the line draws itself from the first year forward
 uniform float uActiveU;    // continuous position of the active year, 0..5
 uniform float uHeat;
-uniform vec2  uNodes[6];
-uniform float uNodeIn[6];  // per-node materialisation
+uniform float uLast;       // index of the final year (YEARS.length - 1)
+uniform vec2  uNodes[12];
+uniform float uNodeIn[12];  // per-node materialisation
 out vec4 frag;
 
 const vec3 AMBER = vec3(1.00, 0.62, 0.26);
@@ -263,7 +264,7 @@ void main(){
   vec3 col = vec3(0.0);
 
   // --- the rail -----------------------------------------------------------
-  // u runs 0..1 from the 2021 end to the 2026 end
+  // u runs 0..1 from the first year end to the last year end
   float u = clamp((a - uSpan.x) / (uSpan.y - uSpan.x), 0.0, 1.0);
   float within = step(min(uSpan.x, uSpan.y) - 0.02, a)
                * step(a, max(uSpan.x, uSpan.y) + 0.02);
@@ -285,7 +286,7 @@ void main(){
   }
 
   // energy running along the rail toward the active year
-  float head = uActiveU / 5.0;
+  float head = uActiveU / uLast;
   float chase = fract(u * 2.4 - uTime * 0.28);
   float pulse = pow(max(0.0, 1.0 - abs(u - head) * 6.0), 2.0);
   col += EMBER * (line + line2 * 0.6) * (0.55 * pulse + 0.20 * pow(chase, 8.0))
@@ -295,7 +296,7 @@ void main(){
   col += EMBER * line * smoothstep(head + 0.04, head - 0.10, u) * 0.30 * within * drawn;
 
   // --- nodes --------------------------------------------------------------
-  for(int i = 0; i < 6; i++){
+  for(int i = 0; i < 12; i++){
     vec2 nd = (p - uNodes[i]) * vec2(uAspect, 1.0);
     float ndr = length(nd);
     float near = 1.0 - clamp(abs(float(i) - uActiveU), 0.0, 1.0);

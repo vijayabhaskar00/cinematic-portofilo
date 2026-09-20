@@ -2,7 +2,7 @@
 //
 // Draw order, back to front:
 //   1  room      warm black, reflective floor, the rotating ring mechanism
-//   2  track     the timeline rail, its six nodes, the energy running along it
+//   2  track     the timeline rail, its year nodes, the energy running along it
 //   3  figure    silhouette from the artwork, lit by this room
 //   4  clock     the dial, its ticks, the hand, and the beam it throws
 //   5  post      grain and vignette
@@ -17,7 +17,7 @@
 // shoulders — while staying lit by this room's shaders. Portrait (and any
 // browser that refuses a second context) keeps him on the main canvas.
 //
-// The six cards themselves are DOM, not canvas: each carries real text that has
+// The year cards themselves are DOM, not canvas: each carries real text that has
 // to stay crisp, selectable and reachable by a screen reader. They are placed
 // from the same fitted geometry this file draws with, so the two layers cannot
 // drift apart.
@@ -65,11 +65,11 @@ export class Chrono {
 
     // continuous position along the timeline, 0..5. Damped rather than set, so
     // the hand has weight and never snaps between years.
-    this.u = 5;
-    this.targetU = 5;
+    this.u = YEARS.length - 1;
+    this.targetU = YEARS.length - 1;
     this.heat = 0;
     this.pointer = { x: 0, y: 0, tx: 0, ty: 0, inside: false };
-    this.active = 5;
+    this.active = YEARS.length - 1;
   }
 
   async load() {
@@ -202,6 +202,7 @@ export class Chrono {
       gl.uniform2f(pr.u.uSpan, L.angles[0], L.angles[L.angles.length - 1]);
       gl.uniform1f(pr.u.uReveal, s.rail);
       gl.uniform1f(pr.u.uActiveU, this.u);
+      gl.uniform1f(pr.u.uLast, YEARS.length - 1);
       gl.uniform1f(pr.u.uHeat, this.heat);
       for (let i = 0; i < L.nodes.length; i++) {
         const n = this._n(L.nodes[i][0], L.nodes[i][1]);

@@ -92,16 +92,26 @@ export async function initChrono() {
     for (let i = 0; i < cards.length; i++) {
       const c = L.cards[i];
       const el = cards[i];
-      // The reference's cards are ~8-12% of frame width — faithful, but at
+      // The reference's cards are ~3-12% of frame width — faithful, but at
       // that size the body copy is unreadable on a real screen (it needed a 3x
       // zoom to read in the poster itself). They are scaled up just enough to
       // be legible while keeping the measured progression and spacing, so the
-      // composition still reads as the reference.
-      const w = portrait ? c.w : c.w * 1.62;
+      // composition still reads as the reference. With 12 cards now sharing
+      // the rail some sit far closer together than the six the 1.62x was
+      // tuned for, so the upscale is also capped to the gap to whichever
+      // neighbour is nearer — otherwise adjacent cards overlap and clip
+      // each other's captions.
+      const prevGap = i > 0 ? Math.abs(c.x - L.cards[i - 1].x) : Infinity;
+      const nextGap = i < cards.length - 1 ? Math.abs(L.cards[i + 1].x - c.x) : Infinity;
+      // .95 rather than a tighter margin: caption text can still wrap
+      // (overflow-wrap: break-word backstops it) instead of bleeding into a
+      // neighbour, so the safety margin only needs to keep frames visually
+      // apart, not guarantee zero approach
+      const w = portrait ? c.w : Math.min(c.w * 1.62, Math.min(prevGap, nextGap) * 0.95);
       el.style.width = `${w}px`;
       el.style.left = `${c.x}px`;
       el.style.top = `${c.y}px`;
-      // cards lean with the rail; the tangent at 2021 is steep and at 2026
+      // cards lean with the rail; the tangent at 2015 is steep and at 2026
       // almost flat, which is exactly the lean the reference has
       const tilt = portrait ? 0 : (L.angles[i] - L.angles[L.angles.length - 1]) * 14;
       el.style.setProperty('--tilt', `${tilt.toFixed(2)}deg`);
